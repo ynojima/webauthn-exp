@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>web authn exp</title>
+    <script>
+
+function createCredential(){
+
+    let challenge  = new Uint8Array(16);
+    let userHandle = new Uint8Array(16);
+
+    let makePublicKeyCredentialOptions = {
+        // Relying Party:
+        rp: {
+            name: "webauthn-exp"
+        },
+        // User:
+        user: {
+            id: userHandle,
+            name: "Ichiro Tanaka",
+            displayName: "i.tanaka@example.com",
+            icon: null
+        },
+        challenge: challenge,
+        pubKeyCredParams: [
+            {
+                alg: -7,
+                type: "public-key",
+            }
+        ],
+        //timeout
+        //excludeCredentials = []
+        //authenticatorSelection
+        //attestation
+        //extensions
+    };
+    let credentialCreationOptions = {
+        publicKey: makePublicKeyCredentialOptions
+    };
+
+    navigator.credentials.create(credentialCreationOptions).then(function(credential){
+        console.log(credential);
+    }).catch(function(error){
+        console.log(error);
+    });
+
+}
+
+function getAssertion(){
+
+    let challenge = new Uint8Array();
+/*    
+    let rawId = null;
+
+    let publicKeyCredentialDescriptor = {
+        id: rawId,
+        type: "public-key",
+        transports: ["usb", "nfc", "ble"],
+    };
+*/
+    let publicKeyCredentialRequestOptions = {
+        challenge: challenge,
+        timeout: 3000,
+        //rpId: null,
+        allowCredentials: [],
+        //userVerification: "preferred",
+        //extensions: []
+    };
+
+
+    navigator.credentials.get({
+        publicKey: publicKeyCredentialRequestOptions
+    }).then(function(assertion){
+        console.log(assertion);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+
+}
+
+
+    </script>
+  </head>
+  <body>
+    <input type="button" value="Create credential" onClick="createCredential();" />
+    <input type="button" value="Get assertion" onClick="getAssertion();" />
+  </body>
+</html>
